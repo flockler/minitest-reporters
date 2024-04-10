@@ -15,6 +15,7 @@ module Minitest
     # Also inspired by minitest-ci (see https://github.com/bhenderson/minitest-ci)
     class JUnitReporter < BaseReporter
       DEFAULT_REPORTS_DIR = "test/reports"
+      FILE_PATH_OVERRIDE_METHOD = :junit_reporter_file_path_override
 
       attr_reader :reports_path
 
@@ -24,6 +25,7 @@ module Minitest
         @single_file = options[:single_file]
         @base_path = options[:base_path] || Dir.pwd
         @timestamp_report = options[:include_timestamp]
+        @test_name_lambda = options[:test_name_lambda]
 
         return unless empty
 
@@ -75,11 +77,20 @@ module Minitest
       private
 
       def get_source_location(result)
-        if result.respond_to? :source_location
-          result.source_location
-        else
-          result.method(result.name).source_location
+        location =
+          if result.respond_to? :source_location
+            result.source_location
+          else
+            result.method(result.name).source_location
+          end
+
+        begin
+          klass = Object.const_get(test_class(result).name)
+          location[0] = klass.send(FILE_PATH_OVERRIDE_METHOD) if klass.respond_to?(FILE_PATH_OVERRIDE_METHOD)
+        rescue
         end
+
+        location
       end
 
       def parse_xml_for(xml, suite, tests)
@@ -97,8 +108,9 @@ module Minitest
         xml.testsuite(testsuite_attributes) do
           tests.each do |test|
             lineno = get_source_location(test).last
+            name = @test_name_lambda.respond_to?(:call) ? @test_name_lambda.call(suite, test) : test.name
             xml.testcase(
-              :name => test.name, :lineno => lineno, :classname => suite,
+              :name => name, :lineno => lineno, :classname => suite,
               :assertions => test.assertions, :time => test.time, :file => file_path
             ) do
               xml << xml_message_for(test) unless test.passed?
