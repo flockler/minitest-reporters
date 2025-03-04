@@ -1,10 +1,17 @@
-### [dev](https://github.com/kern/minitest-reporters/compare/v1.6.1...master)
+### [dev](https://github.com/minitest-reporters/minitest-reporters/compare/v1.7.1...master)
+
+### [1.7.1](https://github.com/minitest-reporters/minitest-reporters/compare/v1.7.0...v1.7.1)
+* Fixed logic of new `suppress_inline_failure_output`. This option was doing the opposite of what it intended to do.
+  [#354](https://github.com/minitest-reporters/minitest-reporters/pull/354)
+
+### [1.7.0](https://github.com/minitest-reporters/minitest-reporters/compare/v1.6.1...v1.7.0)
 
 * Minor documentation improvements [#343](https://github.com/minitest-reporters/minitest-reporters/pull/343)
 * Fixed homepage link in gemspec [#333](https://github.com/minitest-reporters/minitest-reporters/pull/333) contributed by [andyw8](https://github.com/andyw8)
 * Added Ruby 3.2 to the CI matrix [#335](https://github.com/minitest-reporters/minitest-reporters/pull/335) contributed by [petergoldstein](https://github.com/petergoldstein)
 * Updated `JUnitReporter` to output a failure screenshot path when included in the minitest result [#346](https://github.com/minitest-reporters/minitest-reporters/pull/346) contributed by [matteeyah](https://github.com/matteeyah)
 * Fixed backwards fraction in `ProgressReporter` default format [#348](https://github.com/minitest-reporters/minitest-reporters/pull/348) contributed by [notEthan](https://github.com/notEthan)
+* Added option `suppress_inline_failure_output` to `SpecReporter` to provide an explicit switch, separate from `print_failure_summary`, for suppressing inline failure messages. Until this change, the `print_failure_summary` would do both: print a failure/error summary after all tests run and suppress the inline failure messages. With this change `print_failure_summary` will just add a summary at the end of a test run, and it will no longer suppress the inline failure messages. [#352](https://github.com/minitest-reporters/minitest-reporters/pull/352) contributed by [rthbound](https://github.com/rthbound)
 
 ### [1.6.1](https://github.com/kern/minitest-reporters/compare/v1.6.0...v1.6.1)
 
